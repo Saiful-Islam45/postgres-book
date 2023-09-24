@@ -4,6 +4,7 @@ interface IResponse {
   success: boolean;
   statusCode: number;
   message?: string;
+  token?: string;
   meta?: {
     page: number;
     limit: number;
@@ -32,7 +33,8 @@ const sendResponse = <T>(
     statusCode: data.statusCode,
     message: data.message || 'Success',
     meta: data.meta,
-    data: data.data || null
+    data: data.data || null,
+    token: data.token 
   };
 
   res.status(data.statusCode).json(response);

@@ -12,4 +12,4 @@ router
   .patch(CategoryController.updateCategory)
   .delete(CategoryController.deleteCategory);
 
-export const UserRoutes = router;
+export const CategoryRoutes = router;
