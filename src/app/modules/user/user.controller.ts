@@ -17,6 +17,28 @@ const createUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getAllUsers = catchAsync(async (req: Request, res: Response) => {
+  const users = await UserService.getAllUsers();
+  sendResponse<User[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User Created Successfully!!',
+    data: users
+  });
+});
+
+const findUserById = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const user = await UserService.findUserById(id);
+  sendResponse<User | null>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User Created Successfully!!',
+    data: user
+  });
+});
+
+
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.loginUser(req.body);
   const { refreshToken } = result;
@@ -25,18 +47,18 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     secure: config.env === 'production',
     httpOnly: true,
   };
-
   res.cookie('refreshToken', refreshToken, cookieOptions);
-
   sendResponse<ILoginResponse>(res, {
     statusCode: 200,
     success: true,
     message: 'User logged in successfully !',
-    data: result,
+    token: result.accessToken,
   });
 });
 
 export const Usercontroller = {
   createUser,
-  loginUser
+  loginUser,
+  getAllUsers,
+  findUserById
 };

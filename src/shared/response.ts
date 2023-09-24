@@ -18,6 +18,7 @@ const sendResponse = <T>(
     statusCode: number;
     success: boolean;
     message?: string;
+    token?: string;
     meta?: {
       page: number;
       limit: number;

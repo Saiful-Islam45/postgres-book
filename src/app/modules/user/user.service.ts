@@ -19,10 +19,24 @@ const createUser = async (user: User): Promise<User> => {
   return createdUser;
 };
 
+const getAllUsers = async (): Promise<User[]> => {
+  const allUsers = await prisma.user.findMany();
+  return allUsers;
+};
+
 const findByEmail = async (email: string): Promise<User | null> => {
   const user = await prisma.user.findUnique({
     where: {
       email: email
+    }
+  });
+  return user;
+};
+
+const findUserById = async (id: string): Promise<User | null> => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id
     }
   });
   return user;
@@ -61,5 +75,7 @@ const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
 
 export const UserService = {
   createUser,
-  loginUser
+  loginUser,
+  getAllUsers,
+  findUserById
 };
