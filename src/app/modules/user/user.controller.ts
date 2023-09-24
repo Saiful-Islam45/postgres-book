@@ -33,7 +33,7 @@ const findUserById = catchAsync(async (req: Request, res: Response) => {
   sendResponse<User | null>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User Created Successfully!!',
+    message: 'User fetched successfully!!',
     data: user
   });
 });
@@ -44,7 +44,7 @@ const updateUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse<User>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User Created Successfully!!',
+    message: 'User Updated Successfully!!',
     data: user
   });
 });
@@ -55,7 +55,7 @@ const deleteUser = catchAsync(async (req: Request, res: Response) => {
   sendResponse<User>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User Created Successfully!!',
+    message: 'User deleted Successfully!!',
     data: user
   });
 });
