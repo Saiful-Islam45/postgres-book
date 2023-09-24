@@ -6,6 +6,10 @@ const router = express.Router();
 router.post('/signup', Usercontroller.createUser);
 router.post('/signin', Usercontroller.loginUser);
 router.get('/', Usercontroller.getAllUsers);
-router.get('/:id', Usercontroller.findUserById);
+
+router.route('/:id')
+.get(Usercontroller.findUserById)
+.patch(Usercontroller.updateUser)
+.delete(Usercontroller.deleteUser);
 
 export const UserRoutes = router

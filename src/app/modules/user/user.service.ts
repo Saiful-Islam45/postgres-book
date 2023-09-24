@@ -42,6 +42,38 @@ const findUserById = async (id: string): Promise<User | null> => {
   return user;
 };
 
+const updateUser = async (id: string, data: Partial<User>): Promise<User> => {
+  const isUserExist = await findUserById(id);
+  if (data.password) {
+    data.password = await hashedPassword(data.password);
+  }
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
+  }
+  const user = await prisma.user.update({
+    where: {
+      id
+    },
+    data
+  });
+  return user;
+};
+
+const deleteUser = async (id: string): Promise<User> => {
+  const isUserExist = await findUserById(id);
+
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
+  }
+  const user = await prisma.user.delete({
+    where: {
+      id
+    }
+  });
+  return user;
+};
+
 const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
   const { email, password } = payload;
   const isUserExist = await findByEmail(email);
@@ -77,5 +109,7 @@ export const UserService = {
   createUser,
   loginUser,
   getAllUsers,
-  findUserById
+  findUserById,
+  updateUser,
+  deleteUser
 };

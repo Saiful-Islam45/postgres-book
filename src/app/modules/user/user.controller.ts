@@ -38,6 +38,27 @@ const findUserById = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const updateUser = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const user = await UserService.updateUser(id, req.body);
+  sendResponse<User>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User Created Successfully!!',
+    data: user
+  });
+});
+
+const deleteUser = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const user = await UserService.deleteUser(id);
+  sendResponse<User>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User Created Successfully!!',
+    data: user
+  });
+});
 
 const loginUser = catchAsync(async (req: Request, res: Response) => {
   const result = await UserService.loginUser(req.body);
@@ -45,14 +66,14 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
 
   const cookieOptions = {
     secure: config.env === 'production',
-    httpOnly: true,
+    httpOnly: true
   };
   res.cookie('refreshToken', refreshToken, cookieOptions);
   sendResponse<ILoginResponse>(res, {
     statusCode: 200,
     success: true,
     message: 'User logged in successfully !',
-    token: result.accessToken,
+    token: result.accessToken
   });
 });
 
@@ -60,5 +81,7 @@ export const Usercontroller = {
   createUser,
   loginUser,
   getAllUsers,
-  findUserById
+  findUserById,
+  updateUser,
+  deleteUser
 };
