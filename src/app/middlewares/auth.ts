@@ -1,8 +1,10 @@
 import { NextFunction, Response } from 'express';
 import httpStatus from 'http-status';
 import ApiError from '../../errors/apiError';
-import { JwtHelper } from '../../helpers/jwtHelper';
+import { jwtHelpers } from '../../helpers/jwtHelper';
 import { IAuthUser } from '../../interfaces/auth';
+import config from '../../config';
+import { JwtPayload, Secret } from 'jsonwebtoken';
 
 const auth =
   (...requiredRoles: string[]) =>
@@ -14,7 +16,7 @@ const auth =
           return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized'));
         }
 
-        const verifiedUser: IAuthUser = JwtHelper.verifyToken(token);
+        const verifiedUser: JwtPayload = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
 
         if (!verifiedUser) {
           return reject(new ApiError(httpStatus.UNAUTHORIZED, 'Unauthorized'));

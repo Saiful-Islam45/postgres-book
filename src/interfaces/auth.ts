@@ -1,4 +1,4 @@
 export interface IAuthUser {
-  id: string;
+  userId: string;
   role: string;
 }
