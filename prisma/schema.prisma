@@ -11,16 +11,16 @@ datasource db {
 }
 
 model User {
-  id         String @id @default(uuid())
-  name       String
-  email      String @unique
-  password   String
-  role       String
-  contactNo  String
-  address    String
-  profileImg String
-  orders Order[]
-  reviewAndRating  ReviewAndRating?
+  id              String           @id @default(uuid())
+  name            String
+  email           String           @unique
+  password        String
+  role            String
+  contactNo       String
+  address         String
+  profileImg      String
+  orders          Order[]
+  reviewAndRating ReviewAndRating?
 
   @@map("users")
 }
@@ -34,15 +34,15 @@ model Category {
 }
 
 model Book {
-  id              String @id @default(uuid())
+  id              String           @id @default(uuid())
   title           String
   author          String
   price           Float
   genre           String
   publicationDate DateTime
   categoryId      String
-  category Category @relation(fields: [categoryId], references: [id])
-  reviewAndRating  ReviewAndRating?
+  category        Category         @relation(fields: [categoryId], references: [id])
+  reviewAndRating ReviewAndRating?
 
   @@map("books")
 }
@@ -52,20 +52,26 @@ model ReviewAndRating {
   review String
   rating Int
   userId String @unique
-  user User @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id])
   bookId String @unique
-  book Book @relation(fields: [bookId], references: [id])
+  book   Book   @relation(fields: [bookId], references: [id])
 
   @@map("ReviewAndRatings")
 }
 
+enum OrderStatus {
+  pending
+  shipped
+  delivered
+}
+
 model Order {
-  id String @id @default(uuid())
-  userId String
-  user User @relation(fields: [userId], references: [id])
+  id           String      @id @default(uuid())
+  userId       String
+  user         User        @relation(fields: [userId], references: [id])
   orderedBooks Json
-  status String // @default('pending')
-  createdAt DateTime @default(now())
+  status       OrderStatus @default(pending)
+  createdAt    DateTime    @default(now())
 
   @@map("orders")
 }
