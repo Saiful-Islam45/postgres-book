@@ -1,5 +1,6 @@
 import { Order, PrismaClient } from '@prisma/client';
 import { IWhere } from './order.interface';
+import { ITokenData } from '../../../interfaces/common';
 
 const prisma = new PrismaClient();
 
@@ -9,17 +10,12 @@ const createOrder = async (data: Order): Promise<Order> => {
   return order;
 };
 
-const getAllOrders = async (): Promise<Order[]> => {
-  const orders = await prisma.order.findMany();
-  return orders;
-};
-
-const getOrderByUserId = async (userId: string): Promise<Order[]> => {
-  const orders = await prisma.order.findMany({
-    where: {
-      userId
-    }
-  });
+const getAllOrders = async (userData: ITokenData): Promise<Order[]> => {
+  let where = {};
+  if (userData.role === 'customer') {
+    where = { userId: userData.userId };
+  }
+  const orders = await prisma.order.findMany({where});
   return orders;
 };
 
@@ -41,6 +37,5 @@ const getOrderById = async (id: string, userData: any): Promise<Order | null> =>
 export const OrderService = {
   createOrder,
   getAllOrders,
-  getOrderByUserId,
   getOrderById
 };

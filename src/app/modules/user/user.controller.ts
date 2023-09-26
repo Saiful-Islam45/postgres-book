@@ -6,6 +6,8 @@ import { User } from '@prisma/client';
 import httpStatus from 'http-status';
 import { ILoginResponse } from './user.interface';
 import config from '../../../config';
+import { jwtHelpers } from '../../../helpers/jwtHelper';
+import { Secret } from 'jsonwebtoken';
 
 const createUser = catchAsync(async (req: Request, res: Response) => {
   const user = await UserService.createUser(req.body);
@@ -30,6 +32,18 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
 const findUserById = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const user = await UserService.findUserById(id);
+  sendResponse<User | null>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'User getched successfully!!',
+    data: user
+  });
+});
+
+const findProfileByUserId = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization;
+  const userData = jwtHelpers.verifyToken(token as string, config.jwt.secret as Secret);
+  const user = await UserService.findUserById(userData.userId);
   sendResponse<User | null>(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -82,6 +96,7 @@ export const Usercontroller = {
   loginUser,
   getAllUsers,
   findUserById,
+  findProfileByUserId,
   updateUser,
   deleteUser
 };

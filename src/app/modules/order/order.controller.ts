@@ -30,22 +30,12 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getAllOrders = catchAsync(async (req: Request, res: Response) => {
-  const orders = await OrderService.getAllOrders();
-  sendResponse<Order[]>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Orders retrieved successfully',
-    data: orders
-  });
-});
-
-const getOrderByUserId = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization;
   const userData = jwtHelpers.verifyToken(token as string, config.jwt.secret as Secret);
   if (!userData) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Invalid token');
   }
-  const orders = await OrderService.getOrderByUserId(userData.userId);
+  const orders = await OrderService.getAllOrders(userData);
   sendResponse<Order[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -73,6 +63,5 @@ const getOrderById = catchAsync(async (req: Request, res: Response) => {
 export const OrderController = {
   createOrder,
   getAllOrders,
-  getOrderByUserId,
   getOrderById
 };

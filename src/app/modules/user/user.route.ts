@@ -4,6 +4,7 @@ import auth from '../../middlewares/auth';
 import { ENUM_USER_ROLE } from '../../../enums/user';
 
 const router = express.Router();
+const profileRouter = express.Router();
 
 router.post('/signup', Usercontroller.createUser);
 router.post('/signin', Usercontroller.loginUser);
@@ -15,4 +16,7 @@ router
   .patch(auth(ENUM_USER_ROLE.ADMIN), Usercontroller.updateUser)
   .delete(auth(ENUM_USER_ROLE.ADMIN), Usercontroller.deleteUser);
 
+profileRouter.get('/', Usercontroller.findProfileByUserId);
+
 export const UserRoutes = router;
+export const profileRoute =  profileRouter
