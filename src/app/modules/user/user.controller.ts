@@ -22,7 +22,7 @@ const getAllUsers = catchAsync(async (req: Request, res: Response) => {
   sendResponse<User[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User Created Successfully!!',
+    message: 'Users retrieved successfully',
     data: users
   });
 });
@@ -33,7 +33,7 @@ const findUserById = catchAsync(async (req: Request, res: Response) => {
   sendResponse<User | null>(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'User fetched successfully!!',
+    message: 'User getched successfully!!',
     data: user
   });
 });

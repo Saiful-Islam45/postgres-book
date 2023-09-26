@@ -88,7 +88,7 @@ const loginUser = async (payload: ILogin): Promise<ILoginResponse> => {
 
   const { id: userId, role } = isUserExist;
   const accessToken = jwtHelpers.createToken(
-    { userId, role },
+    { userId, role, iat: 1720219422 },
     config.jwt.secret as Secret,
     config.jwt.expires_in as string
   );

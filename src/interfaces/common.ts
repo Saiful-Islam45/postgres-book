@@ -9,6 +9,15 @@ export interface IGenericResponse {
   };
   data?: any;
 }
+export type IGenericResponses<T> = {
+  meta: {
+    page: number;
+    limit: number;
+    total: number;
+  };
+  data: T;
+};
+
 
 export interface IGenericErrorResponse {
   statusCode: number;
@@ -17,4 +26,11 @@ export interface IGenericErrorResponse {
     path: string;
     message: string;
   }[];
+}
+
+
+export type ITokenData = {
+  userId: string;
+  role: string;
+  iat: number;
 }
