@@ -6,6 +6,8 @@ import { jwtHelpers } from '../../../helpers/jwtHelper';
 import ApiError from '../../../errors/apiError';
 import httpStatus from 'http-status';
 import { OrderService } from './order.service';
+import sendResponse from '../../../shared/response';
+import { Order } from '@prisma/client';
 
 const createOrder = catchAsync(async (req: Request, res: Response) => {
   const token = req.headers.authorization;
@@ -19,11 +21,22 @@ const createOrder = catchAsync(async (req: Request, res: Response) => {
   };
   // @ts-ignore
   const order = await OrderService.createOrder(orderInfo);
+  sendResponse<Order>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order created successfully',
+    data: order
+  });
 });
 
 const getAllOrders = catchAsync(async (req: Request, res: Response) => {
   const orders = await OrderService.getAllOrders();
-  return orders;
+  sendResponse<Order[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Orders retrieved successfully',
+    data: orders
+  });
 });
 
 const getOrderByUserId = catchAsync(async (req: Request, res: Response) => {
@@ -32,12 +45,13 @@ const getOrderByUserId = catchAsync(async (req: Request, res: Response) => {
   if (!userData) {
     throw new ApiError(httpStatus.NOT_FOUND, 'Invalid token');
   }
-  const orderInfo = {
-    userId: userData.userId as string,
-    orderedBooks: req.body.orderedBooks
-  };
-
-  const order = await OrderService.getOrderByUserId(userData.userId);
+  const orders = await OrderService.getOrderByUserId(userData.userId);
+  sendResponse<Order[]>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Orders retrieved successfully',
+    data: orders
+  });
 });
 
 const getOrderById = catchAsync(async (req: Request, res: Response) => {
@@ -48,6 +62,12 @@ const getOrderById = catchAsync(async (req: Request, res: Response) => {
     throw new ApiError(httpStatus.NOT_FOUND, 'Invalid token');
   }
   const order = await OrderService.getOrderById(orderId, userData);
+  sendResponse<Order | null>(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Border fetched successfully',
+    data: order
+  });
 });
 
 export const OrderController = {

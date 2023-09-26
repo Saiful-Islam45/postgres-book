@@ -9,7 +9,12 @@ import { IGenericResponses } from '../../../interfaces/common';
 const prisma = new PrismaClient();
 
 const createBook = async (data: Book): Promise<Book> => {
-  const book = await prisma.book.create({ data: data });
+  const book = await prisma.book.create({
+    data,
+    include: {
+      category: true
+    }
+  });
   return book;
 };
 
@@ -17,8 +22,9 @@ const getAllBooks = async (
   filters: IFilters,
   options: IPaginationOptions
 ): Promise<IGenericResponses<Book[]>> => {
-  const { limit, page, skip, sortBy, sortOrder } = paginationHelpers.calculatePagination(options);
-  const { search, ...filterData } = filters;
+  const { size, page, skip, sortBy, sortOrder, minPrice, maxPrice } =
+    paginationHelpers.calculatePagination(options);
+  const { search, category } = filters;
 
   const andConditions = [];
 
@@ -33,29 +39,27 @@ const getAllBooks = async (
     });
   }
 
-  if (Object.keys(filterData).length) {
-    andConditions.push({
-      AND: Object.entries(filterData).map(([field, value]) => ({
-        [field]: value
-      }))
-    });
-  }
-
-  const sortConditions: { [key: string]: SortOrder } = {};
-  if (sortBy && sortOrder) {
-    sortConditions[sortBy] = sortOrder;
-  }
-
   const whereConditions: Prisma.BookWhereInput | {} =
     andConditions.length > 0 ? { AND: andConditions } : {};
-
   const result = await prisma.book.findMany({
-    where: whereConditions,
+    include: {
+      category: true
+    },
+    where: {
+      ...whereConditions,
+      price: {
+        gte: minPrice,
+        lte: maxPrice
+      },
+      category: {
+        title: category
+      }
+    },
     skip,
-    take: limit,
+    take: size,
     orderBy:
-      options.sortBy && options.sortOrder
-        ? { [options.sortBy]: options.sortOrder }
+      sortBy && sortOrder
+        ? { [sortBy]: sortOrder }
         : {
             createdAt: 'desc'
           }
@@ -68,7 +72,8 @@ const getAllBooks = async (
     meta: {
       total,
       page,
-      limit
+      size,
+      totalPage: Math.round(total / size) || 1
     },
     data: result
   };

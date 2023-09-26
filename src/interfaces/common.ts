@@ -4,16 +4,18 @@ export interface IGenericResponse {
   message: string;
   meta?: {
     page: number;
-    limit: number;
+    size: number;
     total: number;
+    totalPage?: number;
   };
   data?: any;
 }
 export type IGenericResponses<T> = {
   meta: {
     page: number;
-    limit: number;
+    size: number;
     total: number;
+    totalPage?: number;
   };
   data: T;
 };

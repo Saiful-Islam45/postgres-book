@@ -15,12 +15,12 @@ const getAllOrders = async (): Promise<Order[]> => {
 };
 
 const getOrderByUserId = async (userId: string): Promise<Order[]> => {
-  const order = await prisma.order.findMany({
+  const orders = await prisma.order.findMany({
     where: {
       userId
     }
   });
-  return order;
+  return orders;
 };
 
 const getOrderById = async (id: string, userData: any): Promise<Order | null> => {
