@@ -4,7 +4,6 @@ import { ZodError } from 'zod';
 import config from '../../config';
 import ApiError from '../../errors/apiError';
 import handleZodError from '../../errors/handleZodError';
-import logger from '../../shared/logger';
 
 const globalExceptionHandler: ErrorRequestHandler = (
   error,
