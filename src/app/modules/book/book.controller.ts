@@ -7,6 +7,7 @@ import { BookService } from './book.service';
 import pick from '../../../shared/pick';
 import { paginationFields } from '../../../constants/global';
 import { filterableFields } from './book.constant';
+import { IGenericResponses } from '../../../interfaces/common';
 
 const createBook = catchAsync(async (req: Request, res: Response) => {
   const book = await BookService.createBook(req.body);
@@ -18,12 +19,11 @@ const createBook = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
-
 const getAllBooks = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, filterableFields);
   const paginationOptions = pick(req.query, paginationFields);
   const books = await BookService.getAllBooks(filters, paginationOptions);
-  sendResponse<any>(res, {
+  sendResponse<IGenericResponses<Book[]>>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Books fetched Successfully!!',
@@ -33,8 +33,9 @@ const getAllBooks = catchAsync(async (req: Request, res: Response) => {
 
 const getBooksByCategoryId = catchAsync(async (req: Request, res: Response) => {
   const { categoryId } = req.params;
-  const books = await BookService.getBooksByCategoryId(categoryId);
-  sendResponse<Book[]>(res, {
+  const paginationOptions = pick(req.query, paginationFields);
+  const books = await BookService.getBooksByCategoryId(categoryId, paginationOptions);
+  sendResponse<IGenericResponses<Book[]>>(res, {
     statusCode: httpStatus.OK,
     success: true,
     message: 'Books with associated category data fetched successfully!!',
